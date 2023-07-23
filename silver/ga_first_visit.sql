@@ -130,10 +130,6 @@ select
 ,MAX(IF(ep_key = "coupon",ep_value,NULL)) as coupon
 ,MAX(IF(ep_key = "transactionShippingFeesLocal",ep_value,NULL)) as transactionShippingFeesLocal
 ,MAX(IF(ep_key = "firebase_error", ep_value, NULL)) as firebase_error	
-  
-
-
-
 
 from base
 
