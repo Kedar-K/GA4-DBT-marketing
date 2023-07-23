@@ -2,9 +2,10 @@
 {{ config(
     materialized='table',
     partition_by={
-      "field": "event_key",
-      "data_type": "date",
-      "granularity": "day"
+      "field": "created_time",
+      "data_type": "timestamp",
+      "granularity": "day",
+      "time_ingestion_partitioning": false
     }
         ) }}
 
@@ -45,13 +46,14 @@
 
 select 
 *,
+current_timestamp() created_time,
 CASE
 when event_name='first_visit' then DATE('2022-01-30')
 when event_name='session_start' then DATE('2022-01-31')
 when event_name='purchase' then DATE('2022-02-01')
 else DATE('1999-01-01')
 end as event_key
-from `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210131` 
+from {{ source('ga4_marketing', 'events_20210127') }}
 where event_name in (
 'first_visit'
 ,'session_start'

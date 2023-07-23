@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: ga4_marketing
+    description: This is a replica of the Postgres database used by our app
+    tables:
+      - name: events_20210127
+        description: >
+          Ga4 event data export

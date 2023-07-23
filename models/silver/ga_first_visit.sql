@@ -1,4 +1,15 @@
-create or replace table `burger-builder-39571.ga4_marketing.ga_first_visit` as
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "created_time",
+      "data_type": "timestamp",
+      "granularity": "day",
+      "time_ingestion_partitioning": false
+    }
+) }}
+
+-- create or replace table `burger-builder-39571.ga4_marketing.ga_first_visit` as
+-- change materialized to incremental when billing is enabled
 
 with base as(
 SELECT 
@@ -21,7 +32,7 @@ SELECT
 
 
   ,main.* except(event_params, event_date, event_timestamp, user_properties, user_pseudo_id, user_first_touch_timestamp,event_previous_timestamp, user_id)
-FROM `burger-builder-39571.ga4_marketing.ga_partition_sessions_20210127` main
+FROM {{ref('ga_event_partition_20210127')}} main
 left join unnest(event_params) ep
 left join unnest(user_properties) up
 where event_key="2022-01-30"
@@ -29,7 +40,8 @@ where event_key="2022-01-30"
 
 -- final_select
 select 
-  date
+  created_time
+  ,date
   ,timestamp
   ,hour
   ,pseudo_id
@@ -133,4 +145,4 @@ select
 
 from base
 
-group by 1, 2, 3, 4, 5, 6, 7 ,8, 9,10, 11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38
+group by 1, 2, 3, 4, 5, 6, 7 ,8, 9,10, 11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39
